@@ -63,6 +63,7 @@ for index, item in enumerate(groups):
             send_button = WebDriverWait(driver, 5).until(EC.presence_of_element_located(
                 (By.XPATH, '//span[@data-icon="send"]')))
             send_button.click()
+            time.sleep(2)
     except Exception as e:
         print(e)
         continue
