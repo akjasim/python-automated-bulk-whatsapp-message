@@ -5,9 +5,11 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 import time
 import pyperclip
+import sys
+from config import CHROME_PROFILE_PATH
 
 options = webdriver.ChromeOptions()
-options.add_argument("user-data-dir=C:\\Users\\akjas\\AppData\\Local\\Google\\Chrome\\User Data\\wtsp")
+options.add_argument(CHROME_PROFILE_PATH)
 driver = webdriver.Chrome(options=options)
 driver.maximize_window()
 
@@ -19,25 +21,48 @@ with open('groups.txt', 'r', encoding='utf8') as f:
 
 with open('msg.txt', 'r', encoding='utf8') as f:
     msg = f.read()
-    print(msg)
 
-for i in groups:
-    search_xpath = '//div[@contenteditable="true"][@data-tab="3"]'
-    search_box = wait.until(EC.presence_of_element_located((By.XPATH, search_xpath)))
-    pyperclip.copy(i)
-    search_box.clear()
-    search_box.send_keys(Keys.CONTROL + "v")
-    time.sleep(2)
+for index, item in enumerate(groups):
+    try:
+        search_xpath = '//div[@contenteditable="true"][@data-tab="3"]'
+        if index > 0:
+            search_box = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, search_xpath)))
+        else:
+            search_box = wait.until(EC.presence_of_element_located((By.XPATH, search_xpath)))
+        pyperclip.copy(item)
+        search_box.clear()
+        search_box.send_keys(Keys.CONTROL + "v")
+        time.sleep(3)
 
-    x_arg = "//span[@title='" + i + "']"
-    group_title = wait.until(EC.presence_of_element_located((By.XPATH, x_arg)))
-    group_title.click()
+        x_arg = f'//span[@title="{item}"][@class="_3ko75 _5h6Y_ _3Whw5"]'
+        group_title = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, x_arg)))
+        group_title.click()
+        time.sleep(3)
 
-    inp_xpath = '//div[@contenteditable="true"][@data-tab="1"]'
-    input_box = wait.until(EC.presence_of_element_located((By.XPATH, inp_xpath)))
+        inp_xpath = '//div[@contenteditable="true"][@data-tab="1"]'
+        input_box = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, inp_xpath)))
 
-    pyperclip.copy(msg)
-    input_box.clear()
-    input_box.send_keys(Keys.CONTROL + "v")
-    input_box.send_keys(Keys.ENTER)
-    time.sleep(3)
+        pyperclip.copy(msg)
+        input_box.clear()
+        input_box.send_keys(Keys.CONTROL + "v")
+        time.sleep(2)
+        input_box.send_keys(Keys.ENTER)
+        time.sleep(1)
+
+        if sys.argv[1]:
+            attachment_box = WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located((By.XPATH, '//div[@title = "Attach"]')))
+            attachment_box.click()
+            time.sleep(1)
+
+            image_box = WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+                (By.XPATH, '//input[@accept="image/*,video/mp4,video/3gpp,video/quicktime"]')))
+            image_box.send_keys(sys.argv[1])
+            time.sleep(2)
+
+            send_button = WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+                (By.XPATH, '//span[@data-icon="send"]')))
+            send_button.click()
+    except Exception as e:
+        print(e)
+        continue

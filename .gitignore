@@ -13,6 +13,7 @@ __pycache__/
 
 # PyCharm
 .idea/
+debug.log
 
 # Distribution / packaging
 .Python
