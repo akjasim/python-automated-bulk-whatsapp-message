@@ -15,9 +15,12 @@ driver.maximize_window()
 
 driver.get("https://web.whatsapp.com/")
 wait = WebDriverWait(driver, 300)
-
-with open('groups.txt', 'r', encoding='utf8') as f:
-    groups = [group.strip() for group in f.readlines()]
+try:
+    if sys.argv[1]:
+        with open(sys.argv[1], 'r', encoding='utf8') as f:
+            groups = [group.strip() for group in f.readlines()]
+except IndexError:
+    print("Please enter the filename as first argument.")
 
 with open('msg.txt', 'r', encoding='utf8') as f:
     msg = f.read()
@@ -49,21 +52,24 @@ for index, item in enumerate(groups):
         input_box.send_keys(Keys.ENTER)
         time.sleep(1)
 
-        if sys.argv[1]:
-            attachment_box = WebDriverWait(driver, 5).until(
-                EC.presence_of_element_located((By.XPATH, '//div[@title = "Attach"]')))
-            attachment_box.click()
-            time.sleep(1)
+        try:
+            if sys.argv[2]:
+                attachment_box = WebDriverWait(driver, 5).until(
+                    EC.presence_of_element_located((By.XPATH, '//div[@title = "Attach"]')))
+                attachment_box.click()
+                time.sleep(1)
 
-            image_box = WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-                (By.XPATH, '//input[@accept="image/*,video/mp4,video/3gpp,video/quicktime"]')))
-            image_box.send_keys(sys.argv[1])
-            time.sleep(2)
+                image_box = WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+                    (By.XPATH, '//input[@accept="image/*,video/mp4,video/3gpp,video/quicktime"]')))
+                image_box.send_keys(sys.argv[2])
+                time.sleep(2)
 
-            send_button = WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-                (By.XPATH, '//span[@data-icon="send"]')))
-            send_button.click()
-            time.sleep(2)
+                send_button = WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+                    (By.XPATH, '//span[@data-icon="send"]')))
+                send_button.click()
+                time.sleep(2)
+        except IndexError:
+            pass
     except Exception as e:
         print(e)
         continue
