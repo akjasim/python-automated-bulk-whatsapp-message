@@ -42,7 +42,7 @@ for index, item in enumerate(groups):
         group_title.click()
         time.sleep(3)
 
-        inp_xpath = '//div[@contenteditable="true"][@data-tab="1"]'
+        inp_xpath = '//div[@contenteditable="true"][@data-tab="6"]'
         input_box = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, inp_xpath)))
 
         pyperclip.copy(msg)
