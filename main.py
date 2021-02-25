@@ -6,15 +6,20 @@ from selenium.webdriver.common.by import By
 import time
 import pyperclip
 import sys
-from config import CHROME_PROFILE_PATH
+from webdriver_manager.chrome import ChromeDriverManager
+
+# from config import CHROME_PROFILE_PATH
 
 options = webdriver.ChromeOptions()
-options.add_argument(CHROME_PROFILE_PATH)
-driver = webdriver.Chrome(options=options)
+# options.add_argument(CHROME_PROFILE_PATH)
+driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.maximize_window()
 
 driver.get("https://web.whatsapp.com/")
 wait = WebDriverWait(driver, 300)
+
+input()
+
 try:
     if sys.argv[1]:
         with open(sys.argv[1], 'r', encoding='utf8') as f:
@@ -28,16 +33,17 @@ with open('msg.txt', 'r', encoding='utf8') as f:
 for index, item in enumerate(groups):
     try:
         search_xpath = '//div[@contenteditable="true"][@data-tab="3"]'
+        print(search_xpath)
         if index > 0:
             search_box = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, search_xpath)))
         else:
             search_box = wait.until(EC.presence_of_element_located((By.XPATH, search_xpath)))
         pyperclip.copy(item)
         search_box.clear()
-        search_box.send_keys(Keys.CONTROL + "v")
+        search_box.send_keys(Keys.COMMAND + "v")
         time.sleep(3)
 
-        x_arg = f'//span[@title="{item}"][@class="_3ko75 _5h6Y_ _3Whw5"]'
+        x_arg = f'//span[@title="{item}"]'
         group_title = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, x_arg)))
         group_title.click()
         time.sleep(3)
@@ -47,7 +53,7 @@ for index, item in enumerate(groups):
 
         pyperclip.copy(msg)
         input_box.clear()
-        input_box.send_keys(Keys.CONTROL + "v")
+        input_box.send_keys(Keys.COMMAND + "v")
         time.sleep(2)
         input_box.send_keys(Keys.ENTER)
         time.sleep(1)
