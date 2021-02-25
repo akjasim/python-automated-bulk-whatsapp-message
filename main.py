@@ -37,7 +37,7 @@ for index, item in enumerate(groups):
         search_box.send_keys(Keys.CONTROL + "v")
         time.sleep(3)
 
-        x_arg = f'//span[@title="{item}"][@class="_3ko75 _5h6Y_ _3Whw5"]'
+        x_arg = f'//span[@title="{item}"]'
         group_title = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, x_arg)))
         group_title.click()
         time.sleep(3)
