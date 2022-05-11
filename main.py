@@ -3,10 +3,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+import chromedriver_autoinstaller
 import time
 import pyperclip
 import sys
 from config import CHROME_PROFILE_PATH
+
+chromedriver_autoinstaller.install()
 
 options = webdriver.ChromeOptions()
 options.add_argument(CHROME_PROFILE_PATH)
